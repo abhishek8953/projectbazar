@@ -31,7 +31,7 @@ const Navbar = ({ cartCount, mobileMenuOpen, setMobileMenuOpen }) => {
 							<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
 						</svg>
 					</div>
-					<span className="logo-text">ProjectHub</span>
+					<span className="logo-text">ProjectBazar</span>
 				</Link>
 
 				{/* Desktop Menu */}
