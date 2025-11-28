@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useRef } from "react";
 
-const API_URL=import.meta.env.VITE_API_URL;
-
-
-
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CartPage = ({ cart, removeFromCart }) => {
   console.log("cartPage");
@@ -12,7 +10,22 @@ const CartPage = ({ cart, removeFromCart }) => {
   const navigate = useNavigate();
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
+  // 🔒 Debounce / cooldown reference
+  const checkoutCooldown = useRef(false);
+
   const handleCheckout = async () => {
+    // ⛔ Prevent multiple calls within 10 sec
+    if (checkoutCooldown.current) {
+      alert("Please wait 10 seconds before trying again.");
+      return;
+    }
+
+    // 🔒 Start cooldown
+    checkoutCooldown.current = true;
+    setTimeout(() => {
+      checkoutCooldown.current = false;
+    }, 10000); // 10 seconds
+
     if (cart.length === 0) {
       alert('Your cart is empty');
       return;
@@ -31,19 +44,19 @@ const CartPage = ({ cart, removeFromCart }) => {
           amount: total
         })
       });
-      
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Failed to create order');
       }
-      
+
       const data = await res.json();
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_xxxxxxxxxx',
         amount: data.amount,
         currency: 'INR',
-        name: 'ProjecBazar',
+        name: 'ProjectBazar',
         description: 'Project Purchase',
         order_id: data.orderId,
         handler: async function (response) {
@@ -56,6 +69,7 @@ const CartPage = ({ cart, removeFromCart }) => {
               },
               body: JSON.stringify(response)
             });
+
             const verifyData = await verifyRes.json();
             if (verifyData.success) {
               alert('Payment successful! Check your orders.');
@@ -78,6 +92,7 @@ const CartPage = ({ cart, removeFromCart }) => {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
+
     } catch (err) {
       alert('Checkout failed: ' + err.message);
     }
@@ -119,15 +134,21 @@ const CartPage = ({ cart, removeFromCart }) => {
               <span>Total</span>
               <span className="total-amount">₹{total}</span>
             </div>
-            <button onClick={handleCheckout} className="btn-checkout">
-              Proceed to Checkout
+
+            {/* ⛔ Disable during cooldown */}
+            <button
+              onClick={handleCheckout}
+              className="btn-checkout"
+              disabled={checkoutCooldown.current}
+            >
+              {checkoutCooldown.current ? "Please wait..." : "Proceed to Checkout"}
             </button>
+
           </div>
         </div>
       )}
     </div>
   );
 };
-
 
 export default CartPage;
