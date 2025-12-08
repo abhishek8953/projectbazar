@@ -163,7 +163,7 @@ const ProjectDetail = ({ addToCart }) => {
 				.finally(() => {
 					setTimeout(() => {
 						setLoder(false);
-					}, 200);
+					}, 50);
 				});
 		}
 		getData();
