@@ -13,6 +13,14 @@ import AdminDashboard from "./components/AdminDashboard";
 import AdminProjects from "./components/AdminProject";
 import AdminOrders from "./components/AdminOrders";
 import NotFound from "./components/Notfound";
+import Footer from "./components/Footer";
+import PrivacyPolicy from "./components/policy/PrivacyPolicy";
+import TermsOfService from "./components/policy/TermOfService";
+import ContactUs from "./components/policy/ContactUs";
+import CookiePolicy from "./components/policy/CookiesPolicy";
+import HelpCenter from "./components/policy/HelpCenter";
+import AboutUs from "./components/AboutUs";
+import ProductDetails from "./components/ProductDetails";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -61,7 +69,9 @@ const AppContent = () => {
 			alert("Already in cart!");
 		}
 	};
-
+	const clearCart = () => {
+		setCart([]);
+	};
 	const removeFromCart = (projectId) => {
 		setCart(cart.filter((item) => item._id !== projectId));
 	};
@@ -87,6 +97,13 @@ const AppContent = () => {
 					/>
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/register" element={<RegisterPage />} />
+					<Route path="/privacy" element={<PrivacyPolicy />} />
+					<Route path="/terms" element={<TermsOfService />} />
+					<Route path="/contact" element={<ContactUs />} />
+					<Route path="/cookies" element={<CookiePolicy />} />
+					<Route path="/help" element={<HelpCenter />} />
+					<Route path="/about" element={<AboutUs />} />
+					<Route path="/projects/:id" element={<ProductDetails addToCart={addToCart} />} />
 
 					{/* Protected Routes */}
 					<Route
@@ -96,6 +113,7 @@ const AppContent = () => {
 								<CartPage
 									cart={cart}
 									removeFromCart={removeFromCart}
+									clearCart={clearCart}
 								/>
 							</ProtectedRoute>
 						}
@@ -139,6 +157,7 @@ const AppContent = () => {
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</main>
+			<Footer />
 		</div>
 	);
 };

@@ -1,11 +1,13 @@
+import { useNavigate } from "react-router-dom";
 
 
 
 const ProjectCard = ({ project, onAddToCart }) => {
-	console.log("Project card add link to another page TODO??");
+	console.log("Project card add link to another page TODO??",project);
+	const navigate=useNavigate();
 	return (
-		<div className="project-card">
-			<div className="project-image">
+		<div className="project-card" >
+			<div className="project-image" onClick={()=>navigate(`projects/${project._id}`)}>
 				<svg
 					width="64"
 					height="64"

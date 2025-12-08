@@ -4,8 +4,8 @@ import { useRef } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const CartPage = ({ cart, removeFromCart }) => {
-  console.log("cartPage");
+const CartPage = ({ cart, removeFromCart,clearCart }) => {
+  
   const { user } = useAuth();
   const navigate = useNavigate();
   const total = cart.reduce((sum, item) => sum + item.price, 0);
@@ -13,10 +13,10 @@ const CartPage = ({ cart, removeFromCart }) => {
   // 🔒 Debounce / cooldown reference
   const checkoutCooldown = useRef(false);
 
-  const handleCheckout = async () => {
+const handleCheckout = async () => {
     // ⛔ Prevent multiple calls within 10 sec
     if (checkoutCooldown.current) {
-      alert("Please wait 10 seconds before trying again.");
+      // alert("Please wait 10 seconds before trying again.");
       return;
     }
 
@@ -72,6 +72,7 @@ const CartPage = ({ cart, removeFromCart }) => {
 
             const verifyData = await verifyRes.json();
             if (verifyData.success) {
+              clearCart();
               alert('Payment successful! Check your orders.');
               navigate('/orders');
             } else {

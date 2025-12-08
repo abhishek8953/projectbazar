@@ -9,15 +9,19 @@ const Order = require('../models/Order');
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user.id })
-      .populate('projects', 'title description category price fileUrls')
-      .sort({ createdAt: -1 });
-
+    const paidOrders = await Order.find({
+      user: req.user.id,
+      paymentStatus:"success"         // only paid orders
+    })
+    .populate('projects', 'title description category price fileUrls')
+    .sort({ createdAt: -1 });
+    
     return res.status(200).json({
       success: true,
-      count: orders.length,
-      orders
+      count: paidOrders.length,
+      orders: paidOrders
     });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -34,7 +38,7 @@ router.get('/', protect, async (req, res) => {
 router.get('/:id', protect, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate('projects', 'title description category price fileUrls')
+      .populate('projects', 'title description category price')
       .populate('user', 'name email');
 
     if (!order) {

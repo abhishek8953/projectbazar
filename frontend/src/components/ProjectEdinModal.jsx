@@ -4,7 +4,7 @@ const API_URL=import.meta.env.VITE_API_URL;
 
 
 const ProjectEditModal = ({ project, onClose, onSuccess }) => {
-  console.log("projectEDItMODAL")
+  
   const [formData, setFormData] = useState({
     title: project.title,
     description: project.description,

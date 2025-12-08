@@ -38,8 +38,10 @@ router.get("/", async (req, res) => {
 
 		const projects = await Project.find(query)
 			.sort({ createdAt: -1 })
-			.select("-__v");
+			.select("-__v -fileUrls");
 
+		
+		
 		res.status(200).json({
 			success: true,
 			count: projects.length,
@@ -60,7 +62,7 @@ router.get("/", async (req, res) => {
 // @access  Public
 router.get("/:id", async (req, res) => {
 	try {
-		const project = await Project.findById(req.params.id);
+		const project = await Project.findById(req.params.id).select("-fileUrls");
 
 		if (!project) {
 			return res.status(404).json({
@@ -68,7 +70,7 @@ router.get("/:id", async (req, res) => {
 				message: "Project not found",
 			});
 		}
-
+     
 		res.status(200).json({
 			success: true,
 			project,
